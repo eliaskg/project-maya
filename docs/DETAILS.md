@@ -334,6 +334,11 @@ print(r.choices[0].message.content)
   long prompt the stream sends keep-alives, so agents do not time out; the server window prints progress every
   15 s, and `GET /status` says what it is doing (`reading the prompt`, `answering`, tokens so far). Closing the
   connection or pressing stop in your app really stops the model, so the next request starts at once.
+- **Prompt reading progress** (OpenAI endpoint, stream only): a request with `"return_progress": true` (llama.cpp's
+  field) gets a chunk with a top-level `prompt_progress` object while the prompt is read, one per prompt chunk:
+  `total` (the whole prompt), `cache` (what the conversation cache already held), `processed` (read so far, cache
+  counted), `time_ms` (the read's elapsed time). The overall progress is `processed/total`; the timed one is
+  `(processed-cache)/(total-cache)`. A client shows a bar from it (llama.cpp's web UI and pi's pi-prefill do).
 - **Chat apps.** Any app with an "OpenAI-compatible" provider works: base URL `http://127.0.0.1:8080/v1`, any API key.
 - **Claude Code** (Strata 0.1.17 or newer): set `ANTHROPIC_BASE_URL=http://127.0.0.1:8080` and
   `ANTHROPIC_MODEL` to a Claude model name it knows (it refuses names it doesn't; Strata ignores the name), plus any
